@@ -81,9 +81,19 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if(move > 0) {
-      description = "Ir al movimiento #" + move;
+      //description = "Ir al movimiento #" + move + "currentMove=" + currentMove;
+      if(move === currentMove) {
+        description = "Estás en el movimiento #" + move;
+      } else {
+        description = "Ir al movimiento #" + move;
+      }
+
     } else {
-      description = "Ir al inicio del juego";
+      if(move === currentMove) {
+        description = "Estás en el inicio del juego";
+      } else {
+        description = "Ir al inicio del juego";
+      }
     };
     return (
       <li key={move}>
@@ -131,6 +141,3 @@ function calculateWinner(squares) {
   }
   return null;
 }
-
-//POSICION TUTORIAL
-//Levantar el estado, otra vez
