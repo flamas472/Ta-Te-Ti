@@ -39,28 +39,43 @@ function Board({xIsNext, squares, onPlay}) {
     status = "Siguiente jugador: " + (xIsNext ? "X" : "O");
   }
 
+  //declare and initialize row array and square counter (0 to 8)
+  let rows = [];
+  let sqCounter = 0;
+
+  //fill the 3 rows with 3 squares each.
+  for(let i = 0; i < 3; i++) {
+    //push an empty square array...
+    rows.push([]);
+    //...and fill it with the 3 squares of that row
+    for(let j = 0; j < 3; j++) {
+      rows[i].push({value: squares[sqCounter], onSquareClick: () => handleClick(sqCounter)});
+      sqCounter++;
+    };
+  };
+
+  //to render it, use 2 maps to transform the data into proper <Square/> components
+  //I learned that JS loops can't be used inside of JSX, so I had to arrange the data in arrays that i can later transform into JSX inside of return sentence
+  //this would be similar to real life data from databases or api calls
+
   return (
     <>
       <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={()=>handleClick(0)}/>
-        <Square value={squares[1]} onSquareClick={()=>handleClick(1)}/>
-        <Square value={squares[2]} onSquareClick={()=>handleClick(2)}/>
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={()=>handleClick(3)}/>
-        <Square value={squares[4]} onSquareClick={()=>handleClick(4)}/>
-        <Square value={squares[5]} onSquareClick={()=>handleClick(5)}/>
-        </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={()=>handleClick(6)}/>
-        <Square value={squares[7]} onSquareClick={()=>handleClick(7)}/>
-        <Square value={squares[8]} onSquareClick={()=>handleClick(8)}/>
-      </div>
+        {
+          rows.map((row, index) => (
+            <div key={index} className="board-row">
+              {
+                row.map(({value, onSquareClick}, index) => (
+                  <Square key={index} value={value} onSquareClick={onSquareClick}/>
+                ))
+              }
+            </div>
+          ))
+        }
+      
     </>
   );
 }
-
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
