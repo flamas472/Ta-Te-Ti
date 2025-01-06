@@ -49,7 +49,7 @@ function Board({xIsNext, squares, onPlay}) {
     rows.push([]);
     //...and fill it with the 3 squares of that row
     for(let j = 0; j < 3; j++) {
-      rows[i].push({value: squares[sqCounter], onSquareClick: () => handleClick(sqCounter)});
+      rows[i].push({value: squares[sqCounter], key: sqCounter});
       sqCounter++;
     };
   };
@@ -65,14 +65,13 @@ function Board({xIsNext, squares, onPlay}) {
           rows.map((row, index) => (
             <div key={index} className="board-row">
               {
-                row.map(({value, onSquareClick}, index) => (
-                  <Square key={index} value={value} onSquareClick={onSquareClick}/>
+                row.map(({value, key}, sqIndex) => (
+                  <Square key={key} value={value} onSquareClick={()=>handleClick(key)}/>
                 ))
               }
             </div>
           ))
         }
-      
     </>
   );
 }
