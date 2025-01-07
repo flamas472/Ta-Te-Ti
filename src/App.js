@@ -74,7 +74,7 @@ function Board({xIsNext, squares, onPlay}) {
 
 
 function Moves({history, currentMove, onJump}) {
-  const [reversed, setReversed] = useState(true);
+  const [reversed, setReversed] = useState(false);
 
   const moves = history.map((_, move) => {
     return Move(move)
