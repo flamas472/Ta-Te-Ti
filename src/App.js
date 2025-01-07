@@ -1,12 +1,10 @@
 import { useState } from "react";
 
-function Square({value, onSquareClick}) {
-  
-  
+function Square({value, onSquareClick, isAWinnerSq}) {
   
   return (
     <button
-    className="square"
+    className={"square" + (isAWinnerSq?" winner-square":"")}
     onClick={onSquareClick}
     >
       {value}
@@ -16,11 +14,12 @@ function Square({value, onSquareClick}) {
 
 function Board({xIsNext, squares, onPlay}) {
   
+  const {winner, winnerSquares} = calculateWinner(squares);
 
   function handleClick(i) {
     const nextSquares = squares.slice();//slice copia si no tiene parametros (utilizamos inmutabilidad)
 
-    if(calculateWinner(squares) || squares[i]) return;
+    if(winner || squares[i]) return;
 
     if(xIsNext){
       nextSquares[i] = "X";
@@ -31,12 +30,15 @@ function Board({xIsNext, squares, onPlay}) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
   let status;
   if (winner) {
     status = "Ganador: " + winner;
   } else {
-    status = "Siguiente jugador: " + (xIsNext ? "X" : "O");
+    if(squares.includes(null)) {
+      status = "Siguiente jugador: " + (xIsNext ? "X" : "O");
+    } else {
+      status = "Empate"
+    }
   }
 
   //declare and initialize row array and square counter (0 to 8)
@@ -62,7 +64,7 @@ function Board({xIsNext, squares, onPlay}) {
             <div key={index} className="board-row">
               {
                 row.map(({value, key}, sqIndex) => (
-                  <Square key={key} value={value} onSquareClick={()=>handleClick(key)}/>
+                  <Square key={key} value={value} onSquareClick={()=>handleClick(key)} isAWinnerSq={winnerSquares.includes(key)}/>
                 ))
               }
             </div>
@@ -177,8 +179,8 @@ function calculateWinner(squares) {
   for(let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
-      return squares[a];
+      return {winner: squares[a], winnerSquares: [a, b, c]};
     }
   }
-  return null;
+  return {winner: null, winnerSquares: []};
 }
