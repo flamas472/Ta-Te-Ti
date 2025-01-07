@@ -77,18 +77,19 @@ function Board({xIsNext, squares, onPlay}) {
 
 function Moves({history, currentMove, onJump}) {
   const [reversed, setReversed] = useState(false);
+  
 
-  const moves = history.map((_, move) => {
-    return Move(move)
+  const moves = history.map((squares, move) => {
+    return Move(move, calculateMovePosition(squares, history[Math.max(move-1, 0)]))
   })
 
-  function Move(move) {
+  function Move(move, {fila, columna}) {
     let description;
     if(move > 0) {
       if(move === currentMove) {
-        description = "Estás en el movimiento #" + move;
+        description = "Estás en el movimiento #" + move + "(" + fila + "," + columna + ")";
       } else {
-        description = "Ir al movimiento #" + move;
+        description = "Ir al movimiento #" + move + "(" + fila + "," + columna + ")";
       }
     } else {
       if(move === currentMove) {
@@ -183,4 +184,19 @@ function calculateWinner(squares) {
     }
   }
   return {winner: null, winnerSquares: []};
+}
+
+function calculateMovePosition(squares, previousSquares) {
+
+  for(let i = 0; i < 9; i++) {
+    if(squares[i] !== previousSquares [i]) {
+
+      return {
+        fila: i % 3 +1,
+        columna: Math.floor(i / 3) + 1
+      }
+    }
+  }
+
+  return {fila: 0, columna: 0}
 }
