@@ -54,10 +54,6 @@ function Board({xIsNext, squares, onPlay}) {
     };
   };
 
-  //to render it, use 2 maps to transform the data into proper <Square/> components
-  //I learned that JS loops can't be used inside of JSX, so I had to arrange the data in arrays that i can later transform into JSX inside of return sentence
-  //this would be similar to real life data from databases or api calls
-
   return (
     <>
       <div className="status">{status}</div>
@@ -78,15 +74,20 @@ function Board({xIsNext, squares, onPlay}) {
 
 
 function Moves({history, currentMove, onJump}) {
+  const [reversed, setReversed] = useState(true);
 
-  const moves = history.map((squares, move) => {
+  const moves = history.map((_, move) => {
+    return Move(move)
+  })
+
+  function Move(move) {
     let description;
     if(move > 0) {
-       if(move === currentMove) {
+      if(move === currentMove) {
         description = "Estás en el movimiento #" + move;
-       } else {
+      } else {
         description = "Ir al movimiento #" + move;
-       }
+      }
     } else {
       if(move === currentMove) {
         description = "Estás en el inicio del juego";
@@ -95,18 +96,32 @@ function Moves({history, currentMove, onJump}) {
       }
     }
 
-    return (
-      <li key={move}>
-        <button onClick={() => onJump(move)}>{description}</button>
-      </li>
-    )
+   return (
+     <li key={move}>
+       <button onClick={() => onJump(move)}>{description}</button>
+     </li>
+   );
+  }
 
-  })
+
+  function reverseOrder() {
+    setReversed(!reversed);
+  }
+
+  let sortedMoves;
+  if(reversed) {
+    sortedMoves = moves.reverse();
+  } else {
+    sortedMoves = moves;
+  }
 
   return (
-    <ol>
-      {moves}
-    </ol>
+    <>
+      <button onClick={reverseOrder}>Invertir orden</button>
+      <ol reversed={reversed}>
+        {sortedMoves}
+      </ol>
+    </>
   );
 
 }
