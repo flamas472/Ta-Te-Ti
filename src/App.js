@@ -76,6 +76,41 @@ function Board({xIsNext, squares, onPlay}) {
   );
 }
 
+
+function Moves({history, currentMove, onJump}) {
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if(move > 0) {
+       if(move === currentMove) {
+        description = "Estás en el movimiento #" + move;
+       } else {
+        description = "Ir al movimiento #" + move;
+       }
+    } else {
+      if(move === currentMove) {
+        description = "Estás en el inicio del juego";
+      } else {
+        description = "Ir al inicio del juego";
+      }
+    }
+
+    return (
+      <li key={move}>
+        <button onClick={() => onJump(move)}>{description}</button>
+      </li>
+    )
+
+  })
+
+  return (
+    <ol>
+      {moves}
+    </ol>
+  );
+
+}
+
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
@@ -95,7 +130,7 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if(move > 0) {
-      //description = "Ir al movimiento #" + move + "currentMove=" + currentMove;
+      
       if(move === currentMove) {
         description = "Estás en el movimiento #" + move;
       } else {
@@ -109,6 +144,8 @@ export default function Game() {
         description = "Ir al inicio del juego";
       }
     };
+
+    
     return (
       <li key={move}>
         <button onClick={() => jumpTo(move)}>{description}</button>
@@ -122,11 +159,11 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        <Moves history={history} currentMove={currentMove} onJump={jumpTo}/>
       </div>
 
     </div>
-  )
+  );
 }
 
 
